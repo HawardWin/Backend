@@ -1,0 +1,83 @@
+/// App.js
+
+const express = require('express');
+const noteModel = require('./models/notes.model') 
+const App = express() ;
+
+App.use(express.json());
+
+App.post('/notes' , async (req , res)=>{
+
+    const {title , description } = req.body ;
+
+  const notes =  await noteModel.create({
+        title , description
+    })
+
+    res.status(201).json({
+        message : "note created successfully" ,
+        note : notes
+    })
+
+})
+
+
+module.exports = App ;
+
+
+/// Server.js 
+ 
+ require("dotenv").config() 
+
+
+
+const server = require('./src/App') ;
+const connectToDb = require('./src/config/dataBase');
+const mongoose = require('mongoose');
+
+connectToDb()
+
+server.listen('3000' , ()=>{
+    console.log('server has been strated at 30000')
+})
+
+/// notes.model.js 
+
+
+ const mongoose = require('mongoose');
+
+const notesSchema = new mongoose.Schema({
+    title : String ,   // using schema to create the formate of data on dataBase , we are telling ki data kaise hoga
+    description : String 
+})
+
+const noteModel =  mongoose.model("notes" , notesSchema) 
+/*
+model is required for all kind of operation which we gonna to perform on database .
+ notes collection ka name hai jisme har notes ka formate same hoga (noteSchema)
+*/
+
+module.exports = noteModel ;
+
+
+
+
+ /// dataBase.js 
+ 
+const dns = require('node:dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
+
+const mongoose = require('mongoose')
+
+ function  connectToDb(){
+      // console.log(url)
+    mongoose.connect(process.env.MONGO_URI)
+
+    .then(()=>{
+        console.log('connected to dataBase successfully')
+    })
+}
+ 
+module.exports = connectToDb
+

@@ -26,7 +26,7 @@ const Notes = () => {
                     console.log(color)
        const {Title , Description } = e.target
 
-            axios.post('https://note-task-64cg.onrender.com/api/notes' , { 
+            axios.post('http://localhost:4000/api/notes' , { 
                  Title : Title.value , 
                  Description : Description.value ,
                  Color: color })
@@ -41,7 +41,7 @@ const Notes = () => {
    async    function deleteNote (note){
              console.log(note._id)
 
-        await     axios.delete(`https://note-task-64cg.onrender.com/api/notes/${note._id}`)
+        await     axios.delete(`http://localhost:4000/api/notes/${note._id}`)
                 .then(res=>{
                   console.log(`Note ${note.Title} has been deleted `)
                   fetchTheNotes()
@@ -70,7 +70,7 @@ const Notes = () => {
   async    function editTheNotes(data){
                console.log(NoteId)
         if(data){
-             await  axios.patch('https://note-task-64cg.onrender.com/api/notes/' + NoteId , {
+             await  axios.patch('http://localhost:4000/api/notes/' + NoteId , {
           Description : data 
          })
 
@@ -84,7 +84,7 @@ const Notes = () => {
 
 
          function fetchTheNotes(){
-       axios.get('https://note-task-64cg.onrender.com/api/notes') 
+       axios.get('http://localhost:4000/api/notes') 
       .then((res)=>{
           setNotes(res.data.notes)            
        })
@@ -94,7 +94,7 @@ const Notes = () => {
 
     useEffect(()=>{                                     
    
-       axios.get('https://note-task-64cg.onrender.com/api/notes') 
+       axios.get('http://localhost:4000/api/notes') 
       .then((res)=>{
           setNotes(res.data.notes)             // useEffet don't allow to re-render such codes in it.. 
        })

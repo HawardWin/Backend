@@ -96,7 +96,7 @@ const Notes = () => {
 
     useEffect(()=>{                                     
    
-       axios.get('http://note-task-64cg.onrender.com/api/notes') 
+       axios.get('https://note-task-64cg.onrender.com/api/notes') 
       .then((res)=>{
           setNotes(res.data.notes)             // useEffet don't allow to re-render such codes in it.. 
        })

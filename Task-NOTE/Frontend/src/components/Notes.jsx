@@ -12,10 +12,13 @@ import './Notes.css'
 
 
 const Notes = () => {
- 
+  
+  const [Title, setTitle] = useState('')
+  const [Des, setDes] = useState('')
+
   const [inputTF, setInputTF] = useState(false)
   let [notes, setNotes] = useState([])
-  const [UpdateDes, setUpdateDes] = useState('')
+  
   const [NoteId, setNoteId] = useState('')
 
  async function  createNotes (e){
@@ -26,7 +29,7 @@ const Notes = () => {
                     console.log(color)
        const {Title , Description } = e.target
 
-            axios.post('http://note-task-64cg.onrender.com/api/notes' , { 
+            axios.post('https://note-task-64cg.onrender.com/api/notes' , { 
                  Title : Title.value , 
                  Description : Description.value ,
                  Color: color })
@@ -34,8 +37,9 @@ const Notes = () => {
                  .then(res=>{
                   console.log("new note has been added ")
                   fetchTheNotes()
-                  e.elements[0].value = '' ;
-                  e.elements[1].value = '' ;
+               
+                  setDes('')
+                  setTitle('')
                  })
 
   }
@@ -43,7 +47,7 @@ const Notes = () => {
    async    function deleteNote (note){
              console.log(note._id)
 
-        await     axios.delete(`http//note-task-64cg.onrender.com/api/notes/${note._id}`)
+        await     axios.delete(`https://note-task-64cg.onrender.com/api/notes/${note._id}`)
                 .then(res=>{
                   console.log(`Note ${note.Title} has been deleted `)
                   fetchTheNotes()
@@ -72,7 +76,7 @@ const Notes = () => {
   async    function editTheNotes(data){
                console.log(NoteId)
         if(data){
-             await  axios.patch('http://note-task-64cg.onrender.com/api/notes/' + NoteId , {
+             await  axios.patch('https://note-task-64cg.onrender.com/api/notes/' + NoteId , {
           Description : data 
          })
 
@@ -86,7 +90,7 @@ const Notes = () => {
 
 
          function fetchTheNotes(){
-       axios.get('http://note-task-64cg.onrender.com/api/notes') 
+       axios.get('https://note-task-64cg.onrender.com/api/notes') 
       .then((res)=>{
           setNotes(res.data.notes)            
        })
@@ -96,7 +100,7 @@ const Notes = () => {
 
     useEffect(()=>{                                     
    
-       axios.get('http://note-task-64cg.onrender.com/api/notes') 
+       axios.get('https://note-task-64cg.onrender.com/api/notes') 
       .then((res)=>{
           setNotes(res.data.notes)             // useEffet don't allow to re-render such codes in it.. 
        })
@@ -109,13 +113,21 @@ const Notes = () => {
         <form className='note-create' onSubmit={createNotes}>
           <div className="title">
             <label htmlFor="name">Title Name : </label>
-          <input  type="text" id='name' name='Title' placeholder='Enter Title Name' />
+          <input value={Title} 
+          onChange={(e)=>{
+               setTitle(e.target.value)
+          }} type="text" id='name' name='Title' placeholder='Enter Title Name' />
           </div>
+
           <div className="des">
             <label htmlFor="name">Description : </label>
-          <input type="text" name='Description' placeholder='Enter Title Description' />
+          <input value={Des} onChange={(e)=>{
+               setDes(e.target.value)
+          }}
+           type="text" name='Description' placeholder='Enter Title Description' />
           </div>
-          <div className="type">
+
+          {/* <div className="type">
              <div className="urgent">
             <label htmlFor="urgent">Urgent</label>
             <input type="radio" id='urgent' value='urgent'/>
@@ -125,7 +137,8 @@ const Notes = () => {
             <label htmlFor="urgent">Urgent</label>
             <input type="radio" id='urgent' value='urgent'/>
              </div>
-          </div>
+          </div> */}
+
           <button type='submit'>Submit</button>
         </form>
       

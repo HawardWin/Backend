@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
     userName : String ,
-    email : String,
+    email: {
+        type: String ,
+        unique: [true , 'This email already exists']
+    },
     password : String
 })
 

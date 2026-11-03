@@ -37,10 +37,26 @@ authRouter.post('/register' , async(req,res)=>{
 
 authRouter.post('/protected' , async (req , res)=>{
 
-   const data = req.cookies
-    console.log(data) 
+   const data = req.headers.cookies
+       console.log(data) 
 
     res.send('data has been protected')
+})
+
+authRouter.post('/login' ,async (req,res)=>{
+     const {email , password } = req.body
+
+    const  user = await userModel.findOne({email}) === email
+    if(!user){
+        return res.status(409).json({
+            message : 'User not found with this email'
+        })
+    }
+  
+    if(password === user.password){
+        res.send("done hai bhai")
+    }
+
 })
 
 module.exports = authRouter

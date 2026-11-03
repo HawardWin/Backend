@@ -2,6 +2,8 @@ const express = require('express')
 const userModel = require('../models/user.model')
 const authRouter = express.Router()
 const jwt = require('jsonwebtoken')
+
+
 authRouter.post('/register' , async(req,res)=>{
     const {userName ,email, password} = req.body
 
@@ -30,6 +32,15 @@ authRouter.post('/register' , async(req,res)=>{
    user ,
    token
     })
+})
+
+
+authRouter.post('/protected' , async (req , res)=>{
+
+   const data = req.cookies
+    console.log(data) 
+
+    res.send('data has been protected')
 })
 
 module.exports = authRouter

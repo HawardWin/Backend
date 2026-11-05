@@ -2,6 +2,7 @@ const express = require('express')
 const userModel = require('../models/user.model')
 const authRouter = express.Router()
 const jwt = require('jsonwebtoken')
+ const crypto = require('crypto')
 
 
 authRouter.post('/register' , async(req,res)=>{
@@ -13,10 +14,11 @@ authRouter.post('/register' , async(req,res)=>{
             message : `Customers with -> ${email} is already exists`
         })
     }
+    const hashPassword = await crypto.createHash('md5').update(password).digest('hex')
    const user = await userModel.create({
         email ,
         userName ,
-        password
+        password : hashPassword
     })
 
   const token =  await jwt.sign({
@@ -37,7 +39,7 @@ authRouter.post('/register' , async(req,res)=>{
 
 authRouter.post('/protected' , async (req , res)=>{
 
-   const data = req.headers.cookies
+   const data = req.cookies
        console.log(data) 
 
     res.send('data has been protected')
@@ -46,16 +48,30 @@ authRouter.post('/protected' , async (req , res)=>{
 authRouter.post('/login' ,async (req,res)=>{
      const {email , password } = req.body
 
-    const  user = await userModel.findOne({email}) === email
+    const user = await userModel.findOne({email})
+
     if(!user){
         return res.status(409).json({
-            message : 'User not found with this email'
+            message : "user don't exist with this email "
         })
     }
-  
-    if(password === user.password){
-        res.send("done hai bhai")
+     
+    isPasswordMatched = user.password === crypto.createHash("md5").update(password).digest('hex')
+    if(!isPasswordMatched){
+        res.status(404).json({
+            message : "Invalid password , Try again"
+        })
     }
+    const token = jwt.sign({
+        id:user._id
+    },
+     process.env.JWT_SECRET
+)
+    res.cookie("jwt_signIn" , token)
+    res.status(200).json({
+        message: "Log in successful" ,
+        token
+    })
 
 })
 
